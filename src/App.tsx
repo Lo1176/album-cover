@@ -1,11 +1,14 @@
 import './App.css';
-import { useFetchQuery } from './hooks/useFetchQuery';
+import { useAPIFetchQuery, useFetchAlbumsQuery } from './hooks/useFetchQuery';
 
 function App() {
-  const path = '?page=1&per_page=2';
-  const data = useFetchQuery(path);
-  console.log('🚀 ~ App ~ data:', data);
-  return <article>Hello</article>;
+  const data = useAPIFetchQuery();
+  const path = 'releases';
+  const albums = useFetchAlbumsQuery(path);
+  console.log('🚀 ~ App ~ albums:', albums);
+  console.log('🍌 ~ App ~ data:', data);
+
+  return <article>et hop</article>;
 }
 
 export default App;
