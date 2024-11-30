@@ -1,41 +1,39 @@
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, UseQueryResult } from '@tanstack/react-query';
 import DiscogsResponse from '../models/discogsResponse';
 
 const endpoint = 'https://api.discogs.com/artists/';
 const artistId = '422014';
-const userName = 'Lo1176';
-const discogsToken = import.meta.env.VITE_DISCOGS_TOKEN;
-const apiUrl = `https://api.discogs.com/users/${userName}/collection/folders/0/releases?token=${discogsToken}&per_page=100&sort=artist`;
-// console.log('fullPath', apiUrl);
 
-export const useAPIFetchQuery = <T extends keyof DiscogsResponse>() => {
-  const { isLoading, error, data } = useQuery({
+/** The generic T extends keyof DiscogsResponse ensures that T can only be 
+a key of the DiscogsResponse interface (e.g., "pagination" or "results").*/
+export const useAPIFetchQuery = (
+  apiUrl: string
+): UseQueryResult<DiscogsResponse> => {
+  return useQuery<DiscogsResponse>({
     queryKey: [apiUrl],
-    queryFn: async () =>
-      await fetch(apiUrl).then(
-        (result) => result.json() as Promise<DiscogsResponse[T]>
-      ),
+    queryFn: async () => {
+      const result = await fetch(apiUrl);
+      if (!result.ok) {
+        throw new Error(`Error fetching data: ${result.statusText}`);
+      }
+      const json: DiscogsResponse = await result.json();
+      return json; // Safely extract the desired key
+    },
   });
-  if (isLoading) return 'Loading...';
-
-  if (error) return 'An error has occurred: ' + error.message;
-
-  return data;
 };
 
-export const useFetchAlbumsQuery = <T extends keyof DiscogsResponse>(
-  path: T
-) => {
-  const { isLoading, error, data } = useQuery({
-    queryKey: [path],
-    queryFn: async () =>
-      await fetch(endpoint + artistId + '/' + path).then(
-        (result) => result.json() as Promise<DiscogsResponse[T]>
-      ),
+// Hook for fetching album credits
+export const useFetchCreditsAlbumQuery = (resourceUrl: string | null) => {
+  return useQuery({
+    queryKey: ['credits', resourceUrl],
+    queryFn: async () => {
+      if (!resourceUrl) throw new Error('Invalid resource URL');
+      const res = await fetch(resourceUrl);
+      if (!res.ok) {
+        throw new Error(`Error fetching credits: ${res.statusText}`);
+      }
+      return res.json();
+    },
+    enabled: !!resourceUrl, // Only fetch when resourceUrl is truthy
   });
-  if (isLoading) return 'Loading...';
-
-  if (error) return 'An error has occurred: ' + error.message;
-
-  return data?.releases;
 };

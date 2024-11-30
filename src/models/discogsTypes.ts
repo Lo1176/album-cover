@@ -1,12 +1,4 @@
 interface DiscogsTypes {
-  id: number;
-  instance_id: number;
-  date_added: string;
-  rating: 0;
-  basic_information: BasicInformation;
-}
-
-interface BasicInformation {
   cover_image: string;
   id: number;
   thumb: string;

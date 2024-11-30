@@ -2,14 +2,15 @@ import DiscogsTypes from './discogsTypes';
 
 interface DiscogsResponse {
   pagination: Pagination;
-  releases: DiscogsTypes[];
+  results: DiscogsTypes[];
 }
 
 interface Pagination {
+  items: number;
   page: number;
   pages: number;
   per_page: number;
-  items: number;
   urls: string;
 }
+
 export default DiscogsResponse;
