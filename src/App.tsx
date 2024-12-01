@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import './App.css';
+import { Modal } from './components/Modal';
 import {
   useAPIFetchQuery,
   useFetchCreditsAlbumQuery,
@@ -13,48 +14,51 @@ function App() {
   const { data, error, isLoading } = useAPIFetchQuery(apiUrl);
 
   // State to track selected album's resource URL
-  const [selectedResourceUrl, setSelectedResourceUrl] = useState<string | null>(
-    null
-  );
+  const [selectedAlbum, setSelectedAlbum] = useState<string | null>(null);
 
   const {
     data: credits,
     error: creditsError,
     isLoading: creditsIsLoading,
-  } = useFetchCreditsAlbumQuery(selectedResourceUrl);
+  } = useFetchCreditsAlbumQuery(selectedAlbum);
 
   if (isLoading) return <div>Loading...</div>;
   if (error) return <div>Error: {error.message}</div>;
 
   const { pagination, results: albums } = data!;
 
+  const handleCloseModal = () => setSelectedAlbum(null);
+
   return (
     <article>
       {albums.map((album) => (
-        <div key={album.id}>
-          <h2>{album.title}</h2>
-          <img
-            src={album.cover_image}
-            alt={album.title}
-            onClick={() => setSelectedResourceUrl(album.resource_url)}
-            style={{ cursor: 'pointer' }}
-          />
-        </div>
-      ))}
-
-      {/* Display credits */}
-      {selectedResourceUrl && (
-        <div>
-          {creditsIsLoading && <p>Loading credits...</p>}
-          {creditsError && <p>Error: {creditsError.message}</p>}
-          {credits && (
+        <>
+          <div key={album.id}>
+            <h2>{album.title}</h2>
+            <img
+              src={album.cover_image}
+              alt={album.title}
+              onClick={() => setSelectedAlbum(album.resource_url)}
+              style={{ cursor: 'pointer' }}
+            />
+          </div>
+          {/* Display credits */}
+          {selectedAlbum && (
             <div>
-              <h3>Credits</h3>
-              <pre>{JSON.stringify(credits, null, 2)}</pre>
+              {creditsIsLoading && <p>Loading credits...</p>}
+              {creditsError && <p>Error: {creditsError.message}</p>}
+              {credits && (
+                <Modal
+                  coverImage={album.cover_image}
+                  title={album.title}
+                  credits={credits}
+                  handleCloseModal={handleCloseModal}
+                />
+              )}
             </div>
           )}
-        </div>
-      )}
+        </>
+      ))}
     </article>
   );
 }
