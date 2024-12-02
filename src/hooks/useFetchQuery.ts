@@ -1,8 +1,5 @@
 import { useQuery, UseQueryResult } from '@tanstack/react-query';
-import DiscogsResponse from '../models/discogsResponse';
-
-const endpoint = 'https://api.discogs.com/artists/';
-const artistId = '422014';
+import { DiscogsResponse } from '../models/discogsTypes';
 
 /** The generic T extends keyof DiscogsResponse ensures that T can only be 
 a key of the DiscogsResponse interface (e.g., "pagination" or "results").*/

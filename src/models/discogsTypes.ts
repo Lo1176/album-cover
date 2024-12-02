@@ -1,4 +1,15 @@
-interface DiscogsTypes {
+export interface DiscogsResponse {
+  pagination: Pagination;
+  results: DiscogsTypes[];
+}
+interface Pagination {
+  items: number;
+  page: number;
+  pages: number;
+  per_page: number;
+  urls: string;
+}
+export interface DiscogsTypes {
   cover_image: string;
   id: number;
   thumb: string;
@@ -20,12 +31,7 @@ interface Formats {
 }
 
 export interface Artist {
-  anv: string;
   id: string;
   name: string;
-  resource_url: string;
   role: string;
-  tracks: string;
 }
-
-export default DiscogsTypes;
