@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import Modal from 'react-modal';
-import './App.css';
 import { Credit, ModalCredits } from './components/ModalCredits';
 import { artistId } from './constants/api';
 import { findArtistById } from './functions/findArtistById';
@@ -15,7 +14,7 @@ Modal.setAppElement('#root'); // Important pour l'accessibilité
 function App() {
   const artistName = 'Laurent Binder';
   const discogsToken = import.meta.env.VITE_DISCOGS_TOKEN;
-  const apiUrl = `https://api.discogs.com/database/search?q=${artistName}&token=${discogsToken}&type=release&page=1&per_page=12&sort=date_added&sort_order=dsc`;
+  const apiUrl = `https://api.discogs.com/database/search?q=${artistName}&token=${discogsToken}&type=release&page=4&per_page=12&sort=date_added&sort_order=dsc`;
 
   const { data, error, isLoading } = useAPIFetchQuery(apiUrl);
   console.log('🚀 ~ data:', data);
@@ -52,6 +51,7 @@ function App() {
       cover_image: album.cover_image,
       title: album.title,
     });
+    console.log('🚀 ~ App ~ AlbumCoverAndTitle:', albumCoverAndTitle);
     setResourceUrlAlbum(album.resource_url);
   };
 
@@ -65,20 +65,22 @@ function App() {
   const isModalShowing = artistRole && albumCoverAndTitle && resourceUrlAlbum;
 
   return (
-    <article>
-      <div className='grid grid-cols-2 md:grid-cols-4 gap-4'>
-        {albums.map((album) => (
-          <div key={album.id}>
-            <h2>{album.title}</h2>
-            <img
-              src={album.cover_image}
-              alt={album.title}
-              onClick={() => handleSelectAlbum(album)}
-              style={{ cursor: 'pointer' }}
-            />
-          </div>
-        ))}
+    <article className=''>
+      <div className='mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8'>
+        <div className='mt-6 grid grid-cols-1 gap-x-4 gap-y-3 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-4'>
+          {albums.map((album) => (
+            <div key={album.id} className='group relative'>
+              <img
+                src={album.cover_image}
+                alt={album.title}
+                onClick={() => handleSelectAlbum(album)}
+                // className='aspect-square w-full rounded-sm object-cover group-hover:opacity-75 lg:aspect-auto lg:h-80'
+              />
+            </div>
+          ))}
+        </div>
       </div>
+
       {/* Display credits */}
       {isModalShowing && (
         <div>
