@@ -10,11 +10,11 @@ interface Pagination {
   urls: string;
 }
 export interface DiscogsTypes {
-  cover_image: string;
+  cover_image: Album['cover_image'];
   id: number;
   thumb: string;
   year: number;
-  title: string;
+  title: Album['title'];
   genres: string[];
   styles: string[];
   artists: Artist[];
@@ -23,6 +23,10 @@ export interface DiscogsTypes {
   formats: Formats[];
 }
 
+export interface Album {
+  cover_image: string;
+  title: string;
+}
 interface Formats {
   descriptions: string[];
   name: string;
