@@ -1,29 +1,23 @@
-import { Artist } from '../models/discogsTypes';
-
-type Track = {
-  position: string;
-  type_: string;
-  title: string;
-  extraartists: Artist[];
-};
+import { Artist, ReleaseTypes } from '../models/discogsTypes';
 
 type Data = {
   extraartists: Artist[];
-  tracklist: Track[];
+  tracklist: ReleaseTypes['tracklist'];
 };
 
-export function findArtistById(
-  data: Data,
-  id: number
-): { name: string; role: string[]; id: number } | null {
+export function findArtistRoleById(data: Data, id: number): Artist | null {
+  const displayRoles = (roles: Artist['role'][]) =>
+    roles.join(', ').toLowerCase();
   const rolesSet = new Set<string>();
   let artistName: string | null = null;
+  let resourceUrl: string = '';
 
   // Helper function to process extraartists array
   const processExtraArtists = (extraartists: Artist[]) => {
     extraartists?.forEach((artist) => {
-      if (parseInt(artist.id) === id) {
+      if (artist.id === id) {
         artistName = artist.name; // Assign the name if it matches
+        resourceUrl = artist.resource_url;
         artist.role.split(',').map((role) => rolesSet.add(role.trim())); // Split and add roles
       }
     });
@@ -41,7 +35,8 @@ export function findArtistById(
   // Convert rolesSet to an array and return the final object
   return {
     name: artistName,
-    role: Array.from(rolesSet),
-    id: id,
+    role: displayRoles(Array.from(rolesSet)),
+    id,
+    resource_url: resourceUrl,
   };
 }

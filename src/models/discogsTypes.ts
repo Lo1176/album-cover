@@ -1,5 +1,3 @@
-import { Credit } from '../components/ModalCredits';
-
 export interface DiscogsReleasesResponse {
   pagination: Pagination;
   releases: ReleasesTypes[];
@@ -38,9 +36,18 @@ export interface ReleaseTypes {
   released: string;
   artists_sort: string;
   images: CoverAlbum[];
-  extraartists: Credit[];
+  extraartists: Artist[];
+  tracklist: Track[];
+  artist?: string;
   // resource_url: string;
 }
+
+type Track = {
+  position: string;
+  type_: string;
+  title: string;
+  extraartists: Artist[];
+};
 
 export interface CoverAlbum {
   // parfois que "secondary" donc prendre images[0]["resource_url"]
@@ -66,6 +73,8 @@ export interface DiscogsTypes {
 export interface Album {
   cover_image: string;
   title: string;
+  userCredit: Artist | null;
+  artistAlbum: string;
 }
 interface Formats {
   descriptions: string[];
@@ -75,7 +84,8 @@ interface Formats {
 }
 
 export interface Artist {
-  id: string;
+  id: number;
   name: string;
   role: string;
+  resource_url: string;
 }

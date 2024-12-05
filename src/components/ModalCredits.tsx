@@ -3,24 +3,15 @@ import Modal from 'react-modal';
 import { Album } from '../models/discogsTypes';
 
 interface ModalCreditsProps {
-  artistRole: Credit;
-  albumCoverAndTitle: Album;
+  // artistRole: Artist;
+  albumDetails: Album;
   resourceUrlAlbum: string;
   handleCloseModal: () => void;
 }
 
-export interface Credit {
-  id: number;
-  name: string;
-  role: string[];
-  resource_url: string;
-}
-
-const displayRoles = (roles: string[]) => roles.join(', ').toLowerCase();
-
 export const ModalCredits: FC<ModalCreditsProps> = ({
-  artistRole,
-  albumCoverAndTitle,
+  // artistRole,
+  albumDetails,
   resourceUrlAlbum,
   handleCloseModal,
 }) => {
@@ -33,19 +24,17 @@ export const ModalCredits: FC<ModalCreditsProps> = ({
     >
       <div className='bg-gray-50 flex flex-col items-center py-6 gap-6'>
         <img
-          src={albumCoverAndTitle.cover_image}
-          alt={albumCoverAndTitle.title}
+          src={albumDetails.cover_image}
+          alt={albumDetails.title}
           className='w-3/4 md:w-3/4 rounded-sm shadow-2xl '
         />
         <div>
-          <h2 className='text-xl font-semibold mb-2'>
-            {albumCoverAndTitle.title}
-          </h2>
+          <h2 className='text-xl font-semibold mb-2'>{albumDetails.title}</h2>
           <ul className='text-left mt-4'>
-            <li key={artistRole.name} className='mb-2'>
+            {/* <li key={artistRole.name} className='mb-2'>
               <span className='font-bold'>{displayRoles(artistRole.role)}</span>{' '}
               {artistRole.name}
-            </li>
+            </li> */}
           </ul>
         </div>
       </div>
