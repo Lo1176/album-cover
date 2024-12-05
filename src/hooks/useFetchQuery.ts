@@ -1,19 +1,136 @@
 import { useQuery, UseQueryResult } from '@tanstack/react-query';
-import { DiscogsResponse } from '../models/discogsTypes';
+import {
+  DiscogsReleasesResponse,
+  MasterTypes,
+  ReleasesTypes,
+  ReleaseTypes,
+} from '../models/discogsTypes';
 
-/** The generic T extends keyof DiscogsResponse ensures that T can only be 
-a key of the DiscogsResponse interface (e.g., "pagination" or "results").*/
+interface EnrichedRelease {
+  releaseData: ReleaseTypes;
+  masterData?: MasterTypes; // Présent uniquement si type === "Master"
+  originalType: ReleasesTypes['type'];
+}
+
+const discogsToken = import.meta.env.VITE_DISCOGS_TOKEN;
+
+/** The generic T extends keyof DiscogsReleasesResponse ensures that T can only be 
+a key of the DiscogsReleasesResponse interface (e.g., "pagination" or "releases").*/
 export const useAPIFetchQuery = (
   apiUrl: string
-): UseQueryResult<DiscogsResponse> => {
-  return useQuery<DiscogsResponse>({
+): UseQueryResult<DiscogsReleasesResponse> => {
+  return useQuery<DiscogsReleasesResponse>({
     queryKey: [apiUrl],
     queryFn: async () => {
       const result = await fetch(apiUrl);
       if (!result.ok) {
         throw new Error(`Error fetching data: ${result.statusText}`);
       }
-      const json: DiscogsResponse = await result.json();
+      const json: DiscogsReleasesResponse = await result.json();
+      return json; // Safely extract the desired key
+    },
+  });
+};
+
+// Hook pour gérer l'ensemble des fetch conditionnels
+export const useEnrichedReleasesQuery = (
+  apiUrl: string
+): UseQueryResult<EnrichedRelease[]> => {
+  return useQuery<EnrichedRelease[]>({
+    queryKey: ['enrichedReleases', apiUrl],
+    queryFn: async () => {
+      // Étape 1 : Récupérer les données initiales
+      const result = await fetch(apiUrl);
+      if (!result.ok) {
+        throw new Error(`Error fetching data: ${result.statusText}`);
+      }
+      const json: DiscogsReleasesResponse = await result.json();
+      // Étape 2 : Traiter chaque release
+      const releases = json.releases;
+      const enrichedReleases: EnrichedRelease[] = [];
+      //
+
+      for (const release of releases) {
+        if (release.type === 'master') {
+          // Fetch Master Data
+          const masterResult = await fetch(
+            release.resource_url + `?token=${discogsToken}`
+          );
+
+          if (!masterResult.ok) {
+            throw new Error(
+              `Error fetching master data: ${masterResult.statusText}`
+            );
+          }
+          const masterData: MasterTypes = await masterResult.json();
+
+          // Fetch Release Data (utilisant masterData.resource_url)
+          const releaseResult = await fetch(
+            masterData.main_release_url + `?token=${discogsToken}`
+          );
+
+          if (!releaseResult.ok) {
+            throw new Error(
+              `Error fetching release data: ${releaseResult.statusText}`
+            );
+          }
+          const releaseData: ReleaseTypes = await releaseResult.json();
+
+          enrichedReleases.push({
+            releaseData,
+            masterData,
+            originalType: release.type,
+          });
+        } else if (release.type === 'release') {
+          // Fetch Release Data Directement
+          const releaseResult = await fetch(
+            release.resource_url + `?token=${discogsToken}`
+          );
+          if (!releaseResult.ok) {
+            throw new Error(
+              `Error fetching release data: ${releaseResult.statusText}`
+            );
+          }
+          const releaseData: ReleaseTypes = await releaseResult.json();
+
+          enrichedReleases.push({
+            releaseData,
+            originalType: release.type,
+          });
+        }
+      }
+      return enrichedReleases;
+    },
+  });
+};
+
+export const useFetchMasterQuery = (
+  apiUrl: string
+): UseQueryResult<MasterTypes> => {
+  return useQuery<MasterTypes>({
+    queryKey: [apiUrl],
+    queryFn: async () => {
+      const result = await fetch(apiUrl);
+      if (!result.ok) {
+        throw new Error(`Error fetching data: ${result.statusText}`);
+      }
+      const json: MasterTypes = await result.json();
+      return json; // Safely extract the desired key
+    },
+  });
+};
+
+export const useFetchReleaseQuery = (
+  apiUrl: string
+): UseQueryResult<ReleaseTypes> => {
+  return useQuery<ReleaseTypes>({
+    queryKey: [apiUrl],
+    queryFn: async () => {
+      const result = await fetch(apiUrl);
+      if (!result.ok) {
+        throw new Error(`Error fetching data: ${result.statusText}`);
+      }
+      const json: ReleaseTypes = await result.json();
       return json; // Safely extract the desired key
     },
   });

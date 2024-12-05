@@ -10,9 +10,10 @@ interface ModalCreditsProps {
 }
 
 export interface Credit {
+  id: number;
   name: string;
   role: string[];
-  id: number;
+  resource_url: string;
 }
 
 const displayRoles = (roles: string[]) => roles.join(', ').toLowerCase();

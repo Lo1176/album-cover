@@ -1,13 +1,53 @@
-export interface DiscogsResponse {
+import { Credit } from '../components/ModalCredits';
+
+export interface DiscogsReleasesResponse {
   pagination: Pagination;
-  results: DiscogsTypes[];
+  releases: ReleasesTypes[];
 }
 interface Pagination {
   items: number;
   page: number;
   pages: number;
   per_page: number;
-  urls: string;
+  urls: {
+    first?: string;
+    last?: string;
+    prev?: string;
+    next?: string;
+  };
+}
+
+export interface ReleasesTypes {
+  artist: string;
+  id: number;
+  main_release: number;
+  resource_url: string;
+  role: string;
+  thumb: string;
+  title: string;
+  type: 'master' | 'release' | 'artist' | 'label';
+  year: number;
+}
+export interface MasterTypes {
+  id: number;
+  main_release_url: string;
+}
+export interface ReleaseTypes {
+  id: number;
+  title: string;
+  released: string;
+  artists_sort: string;
+  images: CoverAlbum[];
+  extraartists: Credit[];
+  // resource_url: string;
+}
+
+export interface CoverAlbum {
+  // parfois que "secondary" donc prendre images[0]["resource_url"]
+  type: 'primary' | 'secondary';
+  uri: string;
+  resource_url: string;
+  uri150: string;
 }
 export interface DiscogsTypes {
   cover_image: Album['cover_image'];
