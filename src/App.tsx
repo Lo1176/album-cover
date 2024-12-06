@@ -1,126 +1,84 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Modal from 'react-modal';
 import { Loading } from './components/Loading';
 import { ModalCredits } from './components/ModalCredits';
-import { findArtistRoleById } from './functions/findArtistRoleById';
-import {
-  useEnrichedReleasesQuery,
-  useFetchCreditsAlbumQuery,
-} from './hooks/useFetchQuery';
-import { Album, Artist, ReleaseTypes } from './models/discogsTypes';
+import { findRoleByArtistId } from './functions/findRoleByArtistId';
+import { useAPIFetchQuery, useFetchReleaseQuery } from './hooks/useFetchQuery';
+import { Artist, ReleaseTypes } from './models/discogsTypes';
 
 Modal.setAppElement('#root'); // Important pour l'accessibilité
 
 function App() {
-  // const artistName: Credit['name'] = 'Laurent Binder';
+  // const artistName: string = '422014-Laurent-Binder';
+  const artistName: string = 'Laurent Binder';
   const artistId: Artist['id'] = 422014;
   const discogsToken = import.meta.env.VITE_DISCOGS_TOKEN;
-  // const apiSearchUrl = `https://api.discogs.com/database/search?q=${artistName}&token=${discogsToken}&type=release&page=4&per_page=12&sort=date_added&sort_order=dsc`;
-  const sort: 'year' | 'title' | 'format' = 'year';
-  const apiUrl = `https://api.discogs.com/artists/${artistId}/releases?token=${discogsToken}&page=1&per_page=12&sort=${sort}&sort_order=desc`;
+  const searchUrl = `https://api.discogs.com/database/search?q=${artistName}&token=${discogsToken}&country=france&type=release&page=1&per_page=36&sort_by=asc`;
 
-  const { data, error, isLoading } = useEnrichedReleasesQuery(apiUrl);
-  console.log('🚀 ~ data:', data);
-
-  // State to track selected album's resource URL
-  // const [fetchedAlbumData, setFetchedAlbumData] = useState({});
-  const [resourceUrlAlbum, setResourceUrlAlbum] = useState<null | string>(null);
-  // const [selectedAlbumData, setSelectedAlbumData] = useState(null);
-  // const [artistRole, setArtistRole] = useState<null | Artist>(null);
-  const [albumDetails, setAlbumDetails] = useState<Album | null>(null);
+  const { data, error, isLoading } = useAPIFetchQuery(searchUrl);
+  const [albumDetails, setAlbumDetails] = useState<ReleaseTypes | undefined>(
+    undefined
+  );
+  const [artistRole, setArtistRole] = useState<Artist | null>(null);
+  const [resourceUrl, setResourceUrl] = useState<string>('');
   const {
     data: albumData,
     error: creditsError,
-    isLoading: creditsIsLoading,
-  } = useFetchCreditsAlbumQuery(resourceUrlAlbum);
+    isLoading: isCreditsLoading,
+  } = useFetchReleaseQuery(resourceUrl);
 
-  // useEffect(() => {
-  //   if (albumData && resourceUrlAlbum) {
-  //     const result = findArtistRoleById(albumData, artistId);
-  //     setArtistRole(result);
-  //     console.log('😊 ~ result:', result);
-  //     console.log('⏱ ~ albumData:', albumData);
-  //     setSelectedAlbumData(albumData);
-  //   }
-  // }, [albumData, resourceUrlAlbum]);
+  useEffect(() => {
+    setAlbumDetails(albumData);
+    if (albumData) {
+      const { extraartists, tracklist }: ReleaseTypes = albumData;
+      const roleByArtistId = findRoleByArtistId(
+        extraartists,
+        tracklist,
+        artistId
+      );
+      setArtistRole(roleByArtistId);
+    }
+  }, [albumData]);
+  // console.log('🚀 ~ App ~ albumData:', albumData);
 
-  // useEffect(() => {
-  //   if (data?.releases) {
-  //     const fetchAlbumDetails = () => {
-  //       const fetchedData = {};
-  //       for (const album of data.releases) {
-  //         const resourceUrl = album.resource_url;
-  //         const response =
-  //           album.type === 'release'
-  //             ? useFetchReleaseQuery(resourceUrl)
-  //             : useFetchMasterQuery(resourceUrl);
-
-  //         fetchedData[album.id] = response;
-  //       }
-  //       setFetchedAlbumData(fetchedData);
-  //     };
-
-  //     fetchAlbumDetails();
-  //   }
-  // }, [data]);
-
-  const handleSelectAlbum = (album: ReleaseTypes) => {
-    console.log('🚀 ~ handleSelectAlbum ~ album:', album);
-    const albumData = {
-      extraartists: album.extraartists,
-      tracklist: album.tracklist,
-    };
-
-    const userCredit = findArtistRoleById(albumData, artistId);
-    console.log('🚀 ~ handleSelectAlbum ~ artist:', userCredit);
-
-    setAlbumDetails({
-      cover_image: album.images[0].resource_url,
-      artistAlbum: album.artists_sort,
-      title: album.title,
-      userCredit,
-    });
-    console.log('🚀 ~ App ~ AlbumDetails:', albumDetails);
-  };
+  // const handleSelectAlbum = (resource_url: string) => {
+  //   setResourceUrl(resource_url);
+  // };
 
   if (isLoading) return <Loading text='Loading albums please wait...' />;
   if (error) return <div className='text-red-600'>Error: {error.message}</div>;
 
-  // const { pagination, releases: albums } = data!;
-  // console.log('🚀 ~ App ~ albums:', albums);
+  const handleCloseModal = () => {
+    setAlbumDetails(undefined);
+  };
 
-  const handleCloseModal = () => setResourceUrlAlbum(null);
-
-  // const isModalShowing = artistRole && albumDetails && resourceUrlAlbum;
-  const isModalShowing = albumDetails && resourceUrlAlbum;
-
-  // const useFetchReleaseData = (resourceUrl: string) =>
-  //   useFetchReleaseQuery(resourceUrl);
-  // const useFetchAlbums = albums?.map((album) => {
-  //   album.type === 'release'
-  //     ? useFetchReleaseQuery(album.resource_url)
-  //     : useFetchMasterQuery(album.resource_url);
-  // });
+  const isModalShowing = albumDetails && artistRole;
 
   return (
     <article className=''>
       <div className='mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8'>
         <div className='mt-6 grid grid-cols-1 gap-x-4 gap-y-3 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-4'>
-          {data?.map(({ releaseData }, index) => {
-            const { images, title } = releaseData;
-            const coverImage = images[0].resource_url;
+          {data?.results.map((release, index) => {
+            const { cover_image, titleArtistAndAlbum, resource_url } = release;
 
             return (
               <div key={index} className='group relative'>
                 <img
-                  width='300px'
-                  height='300px'
-                  src={coverImage}
-                  alt={title}
-                  onClick={() => handleSelectAlbum(releaseData)}
+                  src={cover_image}
+                  alt={`Cover of ${titleArtistAndAlbum}`}
+                  onClick={() => setResourceUrl(resource_url)}
                   className='aspect-square w-full rounded-sm object-cover group-hover:opacity-75 lg:aspect-auto lg:h-80'
                 />
               </div>
+              // <AlbumItem
+              //   key={index}
+              //   coverImage={cover_image}
+              //   titleArtistAndAlbum={titleArtistAndAlbum}
+              //   resourceUrl={resource_url}
+              //   onAlbumSelect={setResourceUrl(resource_url)}
+              //   }
+              //   // artistId={artistId}
+              // />
             );
           })}
         </div>
@@ -129,13 +87,12 @@ function App() {
       {/* Display credits */}
       {isModalShowing && (
         <div>
-          {creditsIsLoading && <p>Loading credits...</p>}
+          {isCreditsLoading && <p>Loading credits...</p>}
           {creditsError && <p>Error: {creditsError.message}</p>}
 
           <ModalCredits
-            // artistRole={artistRole}
+            artistRole={artistRole}
             albumDetails={albumDetails}
-            resourceUrlAlbum={resourceUrlAlbum}
             handleCloseModal={handleCloseModal}
           />
         </div>

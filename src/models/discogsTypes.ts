@@ -1,6 +1,6 @@
 export interface DiscogsReleasesResponse {
   pagination: Pagination;
-  releases: ReleasesTypes[];
+  results: ReleasesTypes[];
 }
 interface Pagination {
   items: number;
@@ -19,10 +19,11 @@ export interface ReleasesTypes {
   artist: string;
   id: number;
   main_release: number;
+  master_id: string;
   resource_url: string;
   role: string;
-  thumb: string;
-  title: string;
+  cover_image: string;
+  titleArtistAndAlbum: string;
   type: 'master' | 'release' | 'artist' | 'label';
   year: number;
 }
@@ -56,6 +57,14 @@ export interface CoverAlbum {
   resource_url: string;
   uri150: string;
 }
+
+export interface Album {
+  cover_image: string;
+  title: string;
+  userCredit: Artist | null;
+  artistAlbum: string;
+  resourceUrlAlbum: string;
+}
 export interface DiscogsTypes {
   cover_image: Album['cover_image'];
   id: number;
@@ -68,13 +77,6 @@ export interface DiscogsTypes {
   master_url: string;
   resource_url: string;
   formats: Formats[];
-}
-
-export interface Album {
-  cover_image: string;
-  title: string;
-  userCredit: Artist | null;
-  artistAlbum: string;
 }
 interface Formats {
   descriptions: string[];

@@ -1,11 +1,15 @@
 import { Artist, ReleaseTypes } from '../models/discogsTypes';
 
-type Data = {
-  extraartists: Artist[];
-  tracklist: ReleaseTypes['tracklist'];
-};
+// type Data = {
+//   extraartists: Artist[];
+//   tracklist: ReleaseTypes['tracklist'];
+// };
 
-export function findArtistRoleById(data: Data, id: number): Artist | null {
+export function findRoleByArtistId(
+  extraartists: ReleaseTypes['extraartists'],
+  tracklist: ReleaseTypes['tracklist'],
+  id: number
+): Artist | null {
   const displayRoles = (roles: Artist['role'][]) =>
     roles.join(', ').toLowerCase();
   const rolesSet = new Set<string>();
@@ -24,10 +28,10 @@ export function findArtistRoleById(data: Data, id: number): Artist | null {
   };
 
   // Process root-level extraartists
-  processExtraArtists(data?.extraartists);
+  processExtraArtists(extraartists);
 
   // Process tracklist-level extraartists
-  data?.tracklist.forEach((track) => processExtraArtists(track?.extraartists));
+  tracklist.forEach((track) => processExtraArtists(track?.extraartists));
 
   // If no artist found, return null
   if (!artistName) return null;

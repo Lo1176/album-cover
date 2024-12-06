@@ -27,8 +27,26 @@ export const useAPIFetchQuery = (
         throw new Error(`Error fetching data: ${result.statusText}`);
       }
       const json: DiscogsReleasesResponse = await result.json();
-      return json; // Safely extract the desired key
+
+      // Filter out duplicates based on master_id
+      const uniqueResults = [];
+      const seenMasterIds = new Set();
+
+      for (const release of json.results) {
+        if (!seenMasterIds.has(release.master_id)) {
+          seenMasterIds.add(release.master_id);
+          uniqueResults.push(release);
+        }
+        // sort by year
+        const sortedResults = uniqueResults.sort((a, b) => b.year - a.year);
+        // Stop adding once we reach 12 items
+        if (sortedResults.length === 24) break;
+      }
+
+      return { ...json, results: uniqueResults }; // Return filtered results
     },
+    // // I have to filter json.results.master_id
+    // return json; // Safely extract the desired key
   });
 };
 
@@ -44,7 +62,7 @@ export const useEnrichedReleasesQuery = (
       if (!result.ok) {
         throw new Error(`Error fetching data: ${result.statusText}`);
       }
-      const json: DiscogsReleasesResponse = await result.json();
+      const json = await result.json();
       // Étape 2 : Traiter chaque release
       const releases = json.releases;
       const enrichedReleases: EnrichedRelease[] = [];
@@ -121,12 +139,13 @@ export const useFetchMasterQuery = (
 };
 
 export const useFetchReleaseQuery = (
-  apiUrl: string
+  resourceUrl: string
 ): UseQueryResult<ReleaseTypes> => {
   return useQuery<ReleaseTypes>({
-    queryKey: [apiUrl],
+    // dès que resourceUrl change ça refetch
+    queryKey: ['release', resourceUrl],
     queryFn: async () => {
-      const result = await fetch(apiUrl);
+      const result = await fetch(resourceUrl + `?token=${discogsToken}`);
       if (!result.ok) {
         throw new Error(`Error fetching data: ${result.statusText}`);
       }
