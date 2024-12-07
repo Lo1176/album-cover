@@ -24,11 +24,13 @@ export const ModalCredits: FC<ModalCreditsProps> = ({
         <img
           src={albumDetails.images[0].resource_url}
           alt={albumDetails.title}
-          className='w-3/4 md:w-3/4 rounded-sm shadow-2xl '
+          className='w-96 md:w-80 rounded-sm shadow-2xl object-cover'
         />
         <div>
-          <h2 className='text-xl font-semibold mb-2'>{albumDetails.title}</h2>
-          <h2 className='text-xl font-semibold mb-2'>
+          <h2 className='font-monument text-xl font-semibold mb-2'>
+            {albumDetails.title}
+          </h2>
+          <h2 className='font-clash text-xl font-semibold mb-2'>
             {albumDetails.artists_sort}
           </h2>
           <ul className='text-left mt-4'>

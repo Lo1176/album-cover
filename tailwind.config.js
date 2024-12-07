@@ -2,7 +2,12 @@
 export default {
   content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
   theme: {
-    extend: {},
+    extend: {
+      fontFamily: {
+        monument: ['Monument', 'sans-serif'],
+        clash: ['Clash', 'sans-serif'],
+      },
+    },
   },
   plugins: [],
 };
