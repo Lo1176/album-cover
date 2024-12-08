@@ -7,6 +7,8 @@
   src: url('./assets/fonts/MonumentExtended-Regular.otf');
   font-family: 'Clash';
   src: url('./assets/fonts/ClashDisplay-Variable.ttf');
+  font-family: 'Dreadnoughtus';
+  src: url('./assets/fonts/DreadnoughtusMedium.ttf');
 }
 
 body {
