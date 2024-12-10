@@ -40,6 +40,7 @@ export interface ReleaseTypes {
   extraartists: Artist[];
   tracklist: Track[];
   artist?: string;
+  year: number;
   // resource_url: string;
 }
 
