@@ -31,13 +31,37 @@ export const ModalCredits: FC<ModalCreditsProps> = ({
             <h2 className='font-dreadnoughtus tracking-widest text-3xl uppercase font-bold mb-1'>
               {albumDetails.title}
             </h2>
+            {/* TODO need to format artists_sort ... name ("number") */}
             <h2 className='text-xl uppercase font-semibold '>
               {albumDetails.artists_sort}
             </h2>
           </div>
-          <p className='font-light '>
-            {artistRole.role} {artistRole.name}
-          </p>
+          {albumDetails.tracklist && (
+            <ul
+              className='flex justify-center flex-wrap
+              '
+            >
+              {albumDetails.tracklist.map((track, index) => (
+                <p
+                  key={track.position}
+                  className='font-light uppercase text-xxs pl-2'
+                >
+                  {index + 1 + '. ' + track.title}
+                </p>
+              ))}
+            </ul>
+          )}
+
+          <div className='flex justify-between items-center'>
+            <p className='font-light'>
+              {artistRole.role} {artistRole.name}
+            </p>
+            <div className='font-light uppercase text-xs text-end '>
+              <p>Released</p>
+
+              <p>{albumDetails.year}</p>
+            </div>
+          </div>
         </div>
       </div>
     </Modal>

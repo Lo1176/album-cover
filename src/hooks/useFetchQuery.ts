@@ -42,7 +42,7 @@ export const useFetchAllAlbumsByArtistNameQuery = (
       let hasNextPage = true;
 
       while (hasNextPage) {
-        const searchUrl = `${baseUrl}?q=${artistName}&token=${token}&format=${format}&country=france&type=${type}&page=${page}&per_page=${perPage}`;
+        const searchUrl = `${baseUrl}?q=${artistName}&token=${token}&format=${format}&format=album&country=france&type=${type}&page=${page}&per_page=${perPage}`;
 
         const response = await fetch(searchUrl);
         if (!response.ok) {
@@ -59,6 +59,7 @@ export const useFetchAllAlbumsByArtistNameQuery = (
           page++;
         }
       }
+      console.log('🚀 ~ queryFn: ~ allAlbums:', allAlbums.length);
       return uniqAndSortAlbums(allAlbums);
     },
     staleTime: Infinity, // Optional: Prevents unnecessary re-fetching
