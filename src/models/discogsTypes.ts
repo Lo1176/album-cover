@@ -17,11 +17,13 @@ interface Pagination {
 
 export interface ReleasesTypes {
   artist: string;
+  barcode: [];
   id: number;
   main_release: number;
-  master_id: string;
+  master_id: number;
   resource_url: string;
   role: string;
+  thumb: string;
   cover_image: string;
   titleArtistAndAlbum: string;
   type: 'master' | 'release' | 'artist' | 'label';
