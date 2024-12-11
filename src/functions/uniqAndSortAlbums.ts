@@ -17,10 +17,6 @@ const uniqAndSortAlbums = (albums: ReleasesTypes[]) => {
       albumsWithReleasedYear.map((release) => [release.master_id, release])
     ).values(),
   ];
-  console.log(
-    '🚀 ~ uniqAndSortAlbums ~ uniqueResults:',
-    albumsWithReleasedYear
-  );
   // sort by year
   const sortedResults = uniqueResults.sort((a, b) => b.year - a.year);
 

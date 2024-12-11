@@ -59,7 +59,6 @@ export const useFetchAllAlbumsByArtistNameQuery = (
           page++;
         }
       }
-      console.log('🚀 ~ queryFn: ~ allAlbums:', allAlbums.length);
       return uniqAndSortAlbums(allAlbums);
     },
     staleTime: Infinity, // Optional: Prevents unnecessary re-fetching
