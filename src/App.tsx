@@ -43,7 +43,6 @@ function App() {
       setArtistRole(roleByArtistId);
     }
   }, [albumData, resourceUrl]);
-  console.log('🚀 ~ useEffect ~ albumData:', albumData);
 
   if (isLoading)
     return <Loading text='We are fetching albums please wait...' />;
@@ -54,7 +53,7 @@ function App() {
     setResourceUrl(undefined);
   };
 
-  const isModalShowing = selectedAlbumDetails && artistRole;
+  const isModalShowing = !!artistRole && !!selectedAlbumDetails;
 
   return (
     <article className=''>

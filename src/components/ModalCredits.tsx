@@ -1,5 +1,6 @@
 import { FC } from 'react';
 import Modal from 'react-modal';
+import removeParenthesesAndNumbers from '../functions/removeParenthesesAndNumbers';
 import { Artist, ReleaseTypes } from '../models/discogsTypes';
 
 interface ModalCreditsProps {
@@ -15,7 +16,7 @@ export const ModalCredits: FC<ModalCreditsProps> = ({
 }) => {
   return (
     <Modal
-      isOpen={!!albumDetails.id}
+      isOpen={!!artistRole && !!albumDetails}
       onRequestClose={handleCloseModal}
       overlayClassName='fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center'
       className='text-center rounded-sm focus:outline-none'
@@ -31,9 +32,8 @@ export const ModalCredits: FC<ModalCreditsProps> = ({
             <h2 className='font-dreadnoughtus tracking-widest text-3xl uppercase font-bold mb-1'>
               {albumDetails.title}
             </h2>
-            {/* TODO need to format artists_sort ... name ("number") */}
             <h2 className='text-xl uppercase font-semibold '>
-              {albumDetails.artists_sort}
+              {removeParenthesesAndNumbers(albumDetails.artists_sort)}
             </h2>
           </div>
           {albumDetails.tracklist && (
@@ -43,7 +43,7 @@ export const ModalCredits: FC<ModalCreditsProps> = ({
             >
               {albumDetails.tracklist.map((track, index) => (
                 <p
-                  key={track.position}
+                  key={index + 1}
                   className='font-light uppercase text-xxs pl-2'
                 >
                   {index + 1 + '. ' + track.title}
@@ -53,10 +53,11 @@ export const ModalCredits: FC<ModalCreditsProps> = ({
           )}
 
           <div className='flex justify-between items-center'>
-            <p className='font-light'>
-              {artistRole.role} {artistRole.name}
-            </p>
-            <div className='font-light uppercase text-xs text-end '>
+            <div className='font-light uppercase text-xs text-start'>
+              <p className='font-light'>{artistRole.role}</p>
+              <p className='font-light'>{artistRole.name} </p>
+            </div>
+            <div className='font-light uppercase text-xs text-end'>
               <p>Released</p>
 
               <p>{albumDetails.year}</p>

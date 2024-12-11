@@ -1,9 +1,17 @@
 import { Artist, ReleaseTypes } from '../models/discogsTypes';
 
-// type Data = {
-//   extraartists: Artist[];
-//   tracklist: ReleaseTypes['tracklist'];
-// };
+function formatString(str: string): string {
+  const regex = /\[(.*)]$/;
+  const match = str.match(regex);
+
+  if (match) {
+    const bracketsContent = match[1];
+    const remainingString = str.replace(regex, '');
+    return bracketsContent + ' ' + remainingString.trim();
+  } else {
+    return str.trim();
+  }
+}
 
 export function findRoleByArtistId(
   extraartists: ReleaseTypes['extraartists'],
@@ -15,22 +23,25 @@ export function findRoleByArtistId(
   const rolesSet = new Set<string>();
   let artistName: string | null = null;
   let resourceUrl: string = '';
+  const regex = /,(?![^\\[]*\])/g;
 
   // Helper function to process extraartists array
   const processExtraArtists = (extraartists: Artist[]) => {
     extraartists?.forEach((artist) => {
       if (artist.id === id) {
-        artistName = artist.name; // Assign the name if it matches
+        artistName = artist.name;
         resourceUrl = artist.resource_url;
-        artist.role.split(',').map((role) => rolesSet.add(role.trim())); // Split and add roles
+        artist.role.split(regex).map((role) => {
+          rolesSet.add(formatString(role));
+        });
       }
     });
   };
 
-  // Process root-level extraartists
+  // Process "root-level" extraartists
   processExtraArtists(extraartists);
 
-  // Process tracklist-level extraartists
+  // Process "tracklist-level" extraartists
   tracklist.forEach((track) => processExtraArtists(track?.extraartists));
 
   // If no artist found, return null
