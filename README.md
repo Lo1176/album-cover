@@ -1,50 +1,23 @@
-# React + TypeScript + Vite
+# Album Cover
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Overview
 
-Currently, two official plugins are available:
+This is a fast-loading web application showcasing my work as an audio engineer. It provides a quick and visually appealing overview of the albums I've worked on.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Technologies Used
 
-## Expanding the ESLint configuration
+- **React & TypeScript:** For building the user interface and ensuring type safety.
+- **Vite:** For rapid development and hot module replacement.
+- **@tanstack/react-query:** For efficient data fetching and caching from the Discogs API.
+- **react-modal:** For creating the modal component to display album details.
+- **Tailwind CSS:** For styling the application with a utility-first approach.
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+## Features
 
-- Configure the top-level `parserOptions` property like this:
+- **Album Covers:** Displays the covers of the primary albums I've worked on.
+- **Modal with Details:** Clicking on an album cover opens a modal that provides additional information about the selected album, fetched from the Discogs API.
+- **Discogs API integration:** Album data is retrieved via the Discogs API, guaranteeing a rich and up-to-date source of information.
 
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
+## Presentation
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
-
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
-
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
-```
+![Screenshot of the main screen, representing cover albums](./src/assets/main-page-presentation.png)
