@@ -21,3 +21,4 @@ This is a fast-loading web application showcasing my work as an audio engineer. 
 ## Presentation
 
 ![Screenshot of the main screen, representing cover albums](./src/assets/main-page-presentation.png)
+![Screenshot showing album details](./src/assets/on-modal-opened.png)
