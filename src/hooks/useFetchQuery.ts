@@ -31,7 +31,7 @@ export const useFetchAllAlbumsByArtistNameQuery = (
   artistName: string = 'Laurent Binder',
   token: string = discogsToken,
   type: 'release' | 'master' | 'artist' | 'label' = 'release',
-  format: 'album' | 'cd' | 'vinyl' = 'album',
+  format: 'album' | 'cd' | 'vinyl' | 'Compilation' = 'cd',
   perPage: string = '50'
 ): UseQueryResult<ReleasesTypes[]> => {
   return useQuery<ReleasesTypes[]>({
@@ -42,7 +42,7 @@ export const useFetchAllAlbumsByArtistNameQuery = (
       let hasNextPage = true;
 
       while (hasNextPage) {
-        const searchUrl = `${baseUrl}?q=${artistName}&token=${token}&format=${format}&format=album&country=france&type=${type}&page=${page}&per_page=${perPage}`;
+        const searchUrl = `${baseUrl}?q=${artistName}&token=${token}&format=${format}&type=${type}&page=${page}&per_page=${perPage}`;
 
         const response = await fetch(searchUrl);
         if (!response.ok) {
@@ -50,6 +50,7 @@ export const useFetchAllAlbumsByArtistNameQuery = (
         }
 
         const data: DiscogsReleasesResponse = await response.json();
+        console.log('🚀 ~ queryFn: ~ data:', data);
 
         allAlbums = [...allAlbums, ...data.results];
 

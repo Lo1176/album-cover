@@ -17,6 +17,7 @@ function App() {
 
   const { data, isLoading, error } =
     useFetchAllAlbumsByArtistNameQuery(baseUrl);
+  console.log('🚀 ~ App ~ data:', data?.length);
 
   const [selectedAlbumDetails, setSelectedAlbumDetails] = useState<
     ReleaseTypes | null | undefined
@@ -42,6 +43,7 @@ function App() {
       setArtistRole(roleByArtistId);
     }
   }, [albumData, resourceUrl]);
+  console.log('🚀 ~ App ~ albumData:', albumData);
 
   if (isLoading)
     return <Loading text='We are fetching albums please wait...' />;
