@@ -27,11 +27,11 @@ export const useFetchReleaseQuery = (
 };
 
 export const useFetchAllAlbumsByArtistNameQuery = (
-  baseUrl: string,
-  artistName: string = 'Laurent Binder',
+  baseUrl: string = 'https://api.discogs.com/database/search',
+  artistName: string = 'Laurent_Binder',
   token: string = discogsToken,
   type: 'release' | 'master' | 'artist' | 'label' = 'release',
-  format: 'album' | 'cd' | 'vinyl' | 'Compilation' = 'cd',
+  format?: 'album' | 'cd' | 'vinyl' | 'Compilation',
   perPage: string = '50'
 ): UseQueryResult<ReleasesTypes[]> => {
   return useQuery<ReleasesTypes[]>({
@@ -42,7 +42,10 @@ export const useFetchAllAlbumsByArtistNameQuery = (
       let hasNextPage = true;
 
       while (hasNextPage) {
-        const searchUrl = `${baseUrl}?q=${artistName}&token=${token}&format=${format}&type=${type}&page=${page}&per_page=${perPage}`;
+        const searchUrl = `${baseUrl}?q=${artistName}&token=${token}${
+          format ? `&format=${format}` : ''
+        }${type ? `&type=${type}` : ''}&page=${page}&per_page=${perPage}`;
+        console.log('🚀 ~ queryFn: ~ searchUrl:', searchUrl);
 
         const response = await fetch(searchUrl);
         if (!response.ok) {
@@ -60,6 +63,7 @@ export const useFetchAllAlbumsByArtistNameQuery = (
           page++;
         }
       }
+      // return allAlbums;
       return uniqAndSortAlbums(allAlbums);
     },
     staleTime: Infinity, // Optional: Prevents unnecessary re-fetching

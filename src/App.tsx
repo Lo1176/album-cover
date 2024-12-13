@@ -13,11 +13,9 @@ Modal.setAppElement('#root'); // Important pour l'accessibilité
 
 function App() {
   const artistId: Artist['id'] = 422014;
-  const baseUrl = 'https://api.discogs.com/database/search';
 
-  const { data, isLoading, error } =
-    useFetchAllAlbumsByArtistNameQuery(baseUrl);
-  console.log('🚀 ~ App ~ data:', data?.length);
+  const { data, isLoading, error } = useFetchAllAlbumsByArtistNameQuery();
+  // console.log('🚀 ~ App ~ data:', data?.length, 'data: ', data);
 
   const [selectedAlbumDetails, setSelectedAlbumDetails] = useState<
     ReleaseTypes | null | undefined
