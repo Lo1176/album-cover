@@ -8,6 +8,9 @@ import {
 
 const discogsToken = import.meta.env.VITE_DISCOGS_TOKEN;
 
+export type SearchType = 'release' | 'master' | 'artist' | 'label' | undefined;
+export type SearchFormat = 'album' | 'cd' | 'vinyl' | 'Compilation' | undefined;
+
 export const useFetchReleaseQuery = (
   resourceUrl: string | undefined
 ): UseQueryResult<ReleaseTypes> => {
@@ -26,26 +29,44 @@ export const useFetchReleaseQuery = (
   });
 };
 
+export const useFetchArtistIdQuery = (baseUrl: string, artistName: string) => {
+  return useQuery({
+    queryKey: ['artistId'],
+    queryFn: async () => {
+      const response = await fetch(
+        `${baseUrl}?q=${artistName === '' ? 'laurent_binder' : artistName}`
+      );
+      if (!response.ok) {
+        throw new Error(`Error fetching data: ${response.statusText}`);
+      }
+      const fetchArtistId = await response.json();
+      console.log('👨‍🎤 ~ useFetchArtistIdQuery ~ FetchArtistId:', fetchArtistId);
+      return fetchArtistId;
+    },
+  });
+};
+
 export const useFetchAllAlbumsByArtistNameQuery = (
-  baseUrl: string = 'https://api.discogs.com/database/search',
-  artistName: string = 'Laurent_Binder',
-  token: string = discogsToken,
-  type: 'release' | 'master' | 'artist' | 'label' = 'release',
-  format?: 'album' | 'cd' | 'vinyl' | 'Compilation',
+  artistName: string = '',
+  type: SearchType = 'release',
+  format?: SearchFormat,
   perPage: string = '50'
 ): UseQueryResult<ReleasesTypes[]> => {
   return useQuery<ReleasesTypes[]>({
-    queryKey: ['allAlbums', artistName],
+    queryKey: ['allAlbums', artistName, type, format],
     queryFn: async () => {
+      const baseUrl: string = 'https://api.discogs.com/database/search';
+      const token: string = discogsToken;
       let page = 1;
       let allAlbums: ReleasesTypes[] = [];
       let hasNextPage = true;
 
       while (hasNextPage) {
-        const searchUrl = `${baseUrl}?q=${artistName}&token=${token}${
-          format ? `&format=${format}` : ''
-        }${type ? `&type=${type}` : ''}&page=${page}&per_page=${perPage}`;
-        console.log('🚀 ~ queryFn: ~ searchUrl:', searchUrl);
+        const searchUrl = `${baseUrl}?q=${
+          artistName === '' ? 'laurent_binder' : artistName
+        }&token=${token}${format ? `&format=${format}` : ''}${
+          type ? `&type=${type}` : ''
+        }&page=${page}&per_page=${perPage}`;
 
         const response = await fetch(searchUrl);
         if (!response.ok) {
@@ -53,7 +74,10 @@ export const useFetchAllAlbumsByArtistNameQuery = (
         }
 
         const data: DiscogsReleasesResponse = await response.json();
-        console.log('🚀 ~ queryFn: ~ data:', data);
+        if (data.pagination.items > 500) {
+          allAlbums = [...allAlbums, ...data.results];
+          return uniqAndSortAlbums(allAlbums);
+        }
 
         allAlbums = [...allAlbums, ...data.results];
 
@@ -63,7 +87,6 @@ export const useFetchAllAlbumsByArtistNameQuery = (
           page++;
         }
       }
-      // return allAlbums;
       return uniqAndSortAlbums(allAlbums);
     },
     staleTime: Infinity, // Optional: Prevents unnecessary re-fetching

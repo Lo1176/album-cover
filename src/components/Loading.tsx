@@ -1,10 +1,8 @@
-import { FC } from 'react';
-
 interface LoadingProps {
   text: string;
 }
 
-export const Loading: FC<LoadingProps> = ({ text }) => {
+export const Loading = ({ text }: LoadingProps) => {
   return (
     <div className='flex flex-col justify-center items-center h-screen  gap-4 text-gray-100'>
       <div

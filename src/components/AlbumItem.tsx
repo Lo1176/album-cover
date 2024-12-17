@@ -1,5 +1,3 @@
-import { FC } from 'react';
-
 interface AlbumItemParams {
   coverImage: string;
   titleArtistAndAlbum: string;
@@ -8,13 +6,13 @@ interface AlbumItemParams {
   // artistId: number;
 }
 
-export const AlbumItem: FC<AlbumItemParams> = ({
+export const AlbumItem = ({
   coverImage,
   titleArtistAndAlbum,
   // resourceUrl,
   onAlbumSelect,
-  // artistId,
-}) => {
+}: // artistId,
+AlbumItemParams) => {
   // const { data: albumData } = useFetchReleaseQuery(resourceUrl);
   return (
     <div className='group relative'>
