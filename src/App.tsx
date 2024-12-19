@@ -2,24 +2,30 @@ import { useEffect, useState } from 'react';
 import Modal from 'react-modal';
 import { Loading } from './components/Loading';
 import { ModalCredits } from './components/ModalCredits';
+import OrderBy from './components/OrderBy';
 import { SearchBar } from './components/SearchBar';
 import { findRoleByArtistId } from './functions/findRoleByArtistId';
 import {
   useFetchAllAlbumsByArtistNameQuery,
   useFetchReleaseQuery,
 } from './hooks/useFetchQuery';
-import { Artist, ReleaseTypes } from './models/discogsTypes';
+import { Artist, ReleasesTypes, ReleaseTypes } from './models/discogsTypes';
 
 Modal.setAppElement('#root'); // Important pour l'accessibilité
 
 function App() {
   const artistId: Artist['id'] = 422014;
   const [artistName, setArtistName] = useState<string>('');
+  const [albums, setAlbums] = useState<ReleasesTypes[] | undefined>();
   // const [type, setType] = useState<SearchType>('release');
   // const [format, setFormat] = useState<SearchFormat>();
 
   const { data, isLoading, error, refetch } =
     useFetchAllAlbumsByArtistNameQuery(artistName); // add refetch?
+
+  useEffect(() => {
+    setAlbums(data);
+  }, [data]);
 
   const handleSearch = (
     // newType: SearchType,
@@ -68,13 +74,19 @@ function App() {
 
   const isModalShowing = !!artistRole && !!selectedAlbumDetails;
 
+  const handleSort = (sortedAlbums: ReleasesTypes[]) => {
+    setAlbums(sortedAlbums);
+  };
+
   return (
     <>
       <SearchBar onSearch={handleSearch} />
+      {albums && <OrderBy albums={albums} onSort={handleSort} />}
+
       <article>
         <div className='mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8'>
           <div className='mt-6 grid grid-cols-1 gap-x-4 gap-y-3 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-4'>
-            {data?.map((release, index) => {
+            {albums?.map((release, index) => {
               const { cover_image, titleArtistAndAlbum, resource_url } =
                 release;
 
