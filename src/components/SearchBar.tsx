@@ -14,6 +14,7 @@ interface SearchBarProps {
 export const SearchBar = ({ onSearch }: SearchBarProps) => {
   // const [type, setType] = useState<SearchType>('release');
   // const [format, setFormat] = useState<SearchFormat>();
+  // TODO maybe useParams to stock the artistName before fetching and reload page
   const [artistName, setArtistName] = useState<string>('');
 
   const handleSubmit = (e: FormEvent) => {
@@ -24,7 +25,7 @@ export const SearchBar = ({ onSearch }: SearchBarProps) => {
   return (
     <form
       onSubmit={handleSubmit}
-      className='flex items-center gap-4 p-4 bg-transparent shadow-md'
+      className='flex grow items-center gap-4 bg-transparent shadow-md'
     >
       <input
         type='text'
@@ -59,7 +60,7 @@ export const SearchBar = ({ onSearch }: SearchBarProps) => {
       <button
         type='submit'
         disabled={artistName.length < 3}
-        className={`px-6 py-2 text-white rounded-md focus:outline-none focus:ring focus:ring-blue-300 ${
+        className={`px-6 py-2 text-white rounded-md focus:outline-none focus:ring focus:ring-white transition-colors duration-300 ${
           artistName.length < 8
             ? 'bg-gray-600 cursor-not-allowed'
             : 'bg-amber-600 hover:bg-amber-700 focus:ring-blue-300'

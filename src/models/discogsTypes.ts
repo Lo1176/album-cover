@@ -25,7 +25,7 @@ export interface ReleasesTypes {
   role: string;
   thumb: string;
   cover_image: string;
-  titleArtistAndAlbum: string;
+  title: string;
   type: 'master' | 'release' | 'artist' | 'label';
   year: number;
 }
