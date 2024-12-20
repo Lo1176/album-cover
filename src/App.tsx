@@ -7,35 +7,45 @@ import { SearchBar } from './components/SearchBar';
 import { findRoleByArtistId } from './functions/findRoleByArtistId';
 import {
   useFetchAllAlbumsByArtistNameQuery,
+  useFetchArtistInformationsQuery,
   useFetchReleaseQuery,
 } from './hooks/useFetchQuery';
-import { Artist, ReleasesTypes, ReleaseTypes } from './models/discogsTypes';
+import {
+  Artist,
+  ArtistInformations,
+  ReleasesTypes,
+  ReleaseTypes,
+} from './models/discogsTypes';
 
 Modal.setAppElement('#root'); // Important pour l'accessibilité
 
 function App() {
-  const artistId: Artist['id'] = 422014;
+  // const artistId: Artist['id'] = 422014;
+  const [artistInformations, setArtistInformations] = useState<
+    ArtistInformations | undefined
+  >();
   const [artistName, setArtistName] = useState<string>('');
   const [albums, setAlbums] = useState<ReleasesTypes[] | undefined>();
-  // const [type, setType] = useState<SearchType>('release');
-  // const [format, setFormat] = useState<SearchFormat>();
 
   const { data, isLoading, error, refetch } =
-    useFetchAllAlbumsByArtistNameQuery(artistName); // add refetch?
+    useFetchAllAlbumsByArtistNameQuery(artistName);
+
+  const {
+    data: artistInformationsFetched,
+    refetch: artistInformationsRefetch,
+  } = useFetchArtistInformationsQuery(artistName);
 
   useEffect(() => {
     setAlbums(data);
   }, [data]);
+  useEffect(() => {
+    setArtistInformations(artistInformationsFetched);
+  }, [artistInformationsFetched]);
 
-  const handleSearch = (
-    // newType: SearchType,
-    // newFormat: SearchFormat,
-    newArtistName: string
-  ) => {
-    // setType(newType);
-    // setFormat(newFormat);
+  const handleSearch = (newArtistName: string) => {
     setArtistName(newArtistName);
     refetch();
+    artistInformationsRefetch();
   };
 
   const [selectedAlbumDetails, setSelectedAlbumDetails] = useState<
@@ -52,16 +62,16 @@ function App() {
 
   useEffect(() => {
     setSelectedAlbumDetails(albumData);
-    if (albumData) {
+    if (albumData && artistInformations?.id) {
       const { extraartists, tracklist }: ReleaseTypes = albumData;
       const roleByArtistId = findRoleByArtistId(
         extraartists,
         tracklist,
-        artistId
+        artistInformations?.id
       );
       setArtistRole(roleByArtistId);
     }
-  }, [albumData, resourceUrl]);
+  }, [albumData, resourceUrl, artistInformations]);
 
   if (isLoading)
     return <Loading text='We are fetching albums please wait...' />;
@@ -81,7 +91,10 @@ function App() {
   return (
     <>
       <div className='flex gap-4 p-4'>
-        <SearchBar onSearch={handleSearch} />
+        <SearchBar
+          onSearch={handleSearch}
+          artistName={artistInformations?.title}
+        />
         {albums && <OrderBy albums={albums} onSort={handleSort} />}
       </div>
 

@@ -1,25 +1,16 @@
 import { FormEvent, useState } from 'react';
 
 interface SearchBarProps {
-  onSearch: (
-    // type: 'release' | 'master' | 'artist' | 'label' | undefined,
-    // format: 'album' | 'cd' | 'vinyl' | 'Compilation' | undefined,
-    artistName: string
-  ) => void;
+  artistName: string;
+  onSearch: (artistName: string) => void;
 }
 
-// export type SearchType = Parameters<SearchBarProps['onSearch']>[0];
-// export type SearchFormat = Parameters<SearchBarProps['onSearch']>[1];
-
-export const SearchBar = ({ onSearch }: SearchBarProps) => {
-  // const [type, setType] = useState<SearchType>('release');
-  // const [format, setFormat] = useState<SearchFormat>();
-  // TODO maybe useParams to stock the artistName before fetching and reload page
-  const [artistName, setArtistName] = useState<string>('');
+export const SearchBar = ({ artistName, onSearch }: SearchBarProps) => {
+  const [nameValue, setNameValue] = useState<string>('');
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault(); // Prevents page from reloading :)
-    onSearch(artistName);
+    onSearch(nameValue);
   };
 
   return (
@@ -30,38 +21,15 @@ export const SearchBar = ({ onSearch }: SearchBarProps) => {
       <input
         type='text'
         placeholder={artistName === '' ? 'Artist Name' : artistName}
-        value={artistName}
-        onChange={(e) => setArtistName(e.target.value.toLowerCase())}
+        value={nameValue}
+        onChange={(e) => setNameValue(e.target.value.toLowerCase())}
         className='w-full px-4 py-2 rounded-sm focus:outline-none focus:ring focus:ring-gray-500  bg-gray-900 text-white'
       />
-      {/* <div className='flex gap-4'>
-        <select
-          value={type}
-          onChange={(e) => setType(e.target.value as SearchType)}
-          className='flex-1 px-4 py-2 rounded-sm focus:outline-none focus:ring focus:ring-gray-500 bg-gray-900 text-white'
-        >
-          <option value='release'>Release</option>
-          <option value='master'>Master</option>
-          <option value='artist'>Artist</option>
-          <option value='label'>Label</option>
-        </select>
-        <select
-          value={format}
-          onChange={(e) => setFormat(e.target.value as SearchFormat)}
-          className='flex-1 px-4 py-2 rounded-md focus:outline-none focus:ring focus:ring-gray-500 bg-gray-900 text-white'
-        >
-          <option value=''>Any Format</option>
-          <option value='album'>Album</option>
-          <option value='cd'>CD</option>
-          <option value='vinyl'>Vinyl</option>
-          <option value='Compilation'>Compilation</option>
-        </select>
-      </div> */}
       <button
         type='submit'
-        disabled={artistName.length < 3}
+        disabled={nameValue.length < 3}
         className={`px-6 py-2 text-white rounded-md focus:outline-none focus:ring focus:ring-white transition-colors duration-300 ${
-          artistName.length < 8
+          nameValue.length < 8
             ? 'bg-gray-600 cursor-not-allowed'
             : 'bg-amber-600 hover:bg-amber-700 focus:ring-blue-300'
         }`}

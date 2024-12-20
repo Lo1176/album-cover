@@ -24,6 +24,7 @@ export const OrderByKeyName = (
   keyName: 'year' | 'title',
   isAscending: boolean
 ): ReleasesTypes[] => {
+  console.log('🚀 ~  OrderByKeyName isAscending is not changing:', isAscending);
   return albums.sort((a, b) => {
     if (keyName === 'year') {
       return isAscending ? a.year - b.year : b.year - a.year;
