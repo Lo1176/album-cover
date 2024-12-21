@@ -90,10 +90,7 @@ function App() {
 
   return (
     <>
-      <div
-        className='max-w-lg mx-auto flex mt-4'
-        // className='flex gap-4 p-4'
-      >
+      <div className='max-w-lg mx-auto flex mt-4'>
         {albums && <OrderBy albums={albums} onSort={handleSort} />}
         {artistInformations && (
           <SearchBar
