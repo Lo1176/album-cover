@@ -25,7 +25,7 @@ export interface ReleasesTypes {
   role: string;
   thumb: string;
   cover_image: string;
-  titleArtistAndAlbum: string;
+  title: string;
   type: 'master' | 'release' | 'artist' | 'label';
   year: number;
 }
@@ -44,6 +44,22 @@ export interface ReleaseTypes {
   artist?: string;
   year: number;
   // resource_url: string;
+}
+
+export interface ArtistInformations {
+  id: number;
+  type: string;
+  user_data: {
+    in_wantlist: boolean;
+    in_collection: boolean;
+  };
+  master_id: number | null;
+  master_url: string | null;
+  uri: string;
+  title: string;
+  thumb: string;
+  cover_image: string;
+  resource_url: string;
 }
 
 type Track = {

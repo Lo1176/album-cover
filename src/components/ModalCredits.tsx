@@ -1,4 +1,3 @@
-import { FC } from 'react';
 import Modal from 'react-modal';
 import removeParenthesesAndNumbers from '../functions/removeParenthesesAndNumbers';
 import { Artist, ReleaseTypes } from '../models/discogsTypes';
@@ -9,11 +8,11 @@ interface ModalCreditsProps {
   handleCloseModal: () => void;
 }
 
-export const ModalCredits: FC<ModalCreditsProps> = ({
+export const ModalCredits = ({
   artistRole,
   albumDetails,
   handleCloseModal,
-}) => {
+}: ModalCreditsProps) => {
   return (
     <Modal
       isOpen={!!artistRole && !!albumDetails}

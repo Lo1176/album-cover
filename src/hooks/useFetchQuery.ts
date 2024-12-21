@@ -1,13 +1,66 @@
 import { useQuery, UseQueryResult } from '@tanstack/react-query';
 import uniqAndSortAlbums from '../functions/uniqAndSortAlbums';
 import {
+  ArtistInformations,
   DiscogsReleasesResponse,
   ReleasesTypes,
   ReleaseTypes,
 } from '../models/discogsTypes';
 
 const discogsToken = import.meta.env.VITE_DISCOGS_TOKEN;
+const token: string = discogsToken;
+const baseUrl: string = 'https://api.discogs.com/database/search';
 
+type SearchType = 'release' | 'master' | 'artist' | 'label' | undefined;
+type SearchFormat = 'album' | 'cd' | 'vinyl' | 'Compilation' | undefined;
+
+// fetch all albums by artist name
+export const useFetchAllAlbumsByArtistNameQuery = (
+  artistName: string = '',
+  type: SearchType = 'release',
+  format?: SearchFormat,
+  perPage: string = '50'
+): UseQueryResult<ReleasesTypes[]> => {
+  return useQuery<ReleasesTypes[]>({
+    queryKey: ['allAlbums', artistName, type, format],
+    queryFn: async () => {
+      let page = 1;
+      let allAlbums: ReleasesTypes[] = [];
+      let hasNextPage = true;
+
+      while (hasNextPage) {
+        const searchUrl = `${baseUrl}?q=${
+          artistName === '' ? 'laurent_binder' : artistName
+        }&token=${token}${format ? `&format=${format}` : ''}${
+          type ? `&type=${type}` : ''
+        }&page=${page}&per_page=${perPage}`;
+
+        const response = await fetch(searchUrl);
+        if (!response.ok) {
+          throw new Error(`Error fetching data: ${response.statusText}`);
+        }
+
+        const data: DiscogsReleasesResponse = await response.json();
+        if (data.pagination.items > 500) {
+          allAlbums = [...allAlbums, ...data.results];
+          return uniqAndSortAlbums(allAlbums);
+        }
+
+        allAlbums = [...allAlbums, ...data.results];
+
+        if (page >= data.pagination.pages) {
+          hasNextPage = false;
+        } else {
+          page++;
+        }
+      }
+      return uniqAndSortAlbums(allAlbums);
+    },
+    staleTime: Infinity, // Optional: Prevents unnecessary re-fetching
+  });
+};
+
+// Fetch an album
 export const useFetchReleaseQuery = (
   resourceUrl: string | undefined
 ): UseQueryResult<ReleaseTypes> => {
@@ -26,46 +79,28 @@ export const useFetchReleaseQuery = (
   });
 };
 
-export const useFetchAllAlbumsByArtistNameQuery = (
-  baseUrl: string = 'https://api.discogs.com/database/search',
-  artistName: string = 'Laurent_Binder',
-  token: string = discogsToken,
-  type: 'release' | 'master' | 'artist' | 'label' = 'release',
-  format?: 'album' | 'cd' | 'vinyl' | 'Compilation',
-  perPage: string = '50'
-): UseQueryResult<ReleasesTypes[]> => {
-  return useQuery<ReleasesTypes[]>({
-    queryKey: ['allAlbums', artistName],
+// fetch artist informations
+export const useFetchArtistInformationsQuery = (
+  artistName: string
+): UseQueryResult<ArtistInformations> => {
+  return useQuery({
+    queryKey: ['artistInformations', artistName],
     queryFn: async () => {
-      let page = 1;
-      let allAlbums: ReleasesTypes[] = [];
-      let hasNextPage = true;
-
-      while (hasNextPage) {
-        const searchUrl = `${baseUrl}?q=${artistName}&token=${token}${
-          format ? `&format=${format}` : ''
-        }${type ? `&type=${type}` : ''}&page=${page}&per_page=${perPage}`;
-        console.log('🚀 ~ queryFn: ~ searchUrl:', searchUrl);
-
-        const response = await fetch(searchUrl);
-        if (!response.ok) {
-          throw new Error(`Error fetching data: ${response.statusText}`);
-        }
-
-        const data: DiscogsReleasesResponse = await response.json();
-        console.log('🚀 ~ queryFn: ~ data:', data);
-
-        allAlbums = [...allAlbums, ...data.results];
-
-        if (page >= data.pagination.pages) {
-          hasNextPage = false;
-        } else {
-          page++;
-        }
+      const response = await fetch(
+        `${baseUrl}?q=${
+          artistName === '' ? 'laurent_binder' : artistName
+        }&token=${token}`
+      );
+      if (!response.ok) {
+        throw new Error(`Error fetching data: ${response.statusText}`);
       }
-      // return allAlbums;
-      return uniqAndSortAlbums(allAlbums);
+
+      const data: DiscogsReleasesResponse = await response.json();
+      localStorage.setItem(
+        'artist_informations',
+        JSON.stringify(data.results[0])
+      );
+      return data.results[0];
     },
-    staleTime: Infinity, // Optional: Prevents unnecessary re-fetching
   });
 };
