@@ -28,10 +28,10 @@ export const ModalCredits = ({
         />
         <div className='flex flex-col justify-center gap-4'>
           <div>
-            <h2 className='font-dreadnoughtus tracking-widest text-2xl sm:text-3xl uppercase font-bold mb-1'>
+            <h2 className='font-dreadnoughtus tracking-widest text-xl sm:text-3xl uppercase font-bold mb-1'>
               {albumDetails.title}
             </h2>
-            <h2 className='text-lg sm:text-xl uppercase font-semibold '>
+            <h2 className='text-md sm:text-xl uppercase font-semibold '>
               {removeParenthesesAndNumbers(albumDetails.artists_sort)}
             </h2>
           </div>
