@@ -16,26 +16,36 @@ export const SearchBar = ({ artistName, onSearch }: SearchBarProps) => {
   return (
     <form
       onSubmit={handleSubmit}
-      className='flex grow items-center gap-4 bg-transparent shadow-md'
+      className='grow max-w-md mx-auto'
+      // className='flex grow items-center gap-4 bg-transparent shadow-md'
     >
-      <input
-        type='text'
-        placeholder={artistName === '' ? 'Artist Name' : artistName}
-        value={nameValue}
-        onChange={(e) => setNameValue(e.target.value.toLowerCase())}
-        className='w-full px-4 py-2 rounded-sm focus:outline-none focus:ring focus:ring-gray-500  bg-gray-900 text-white'
-      />
-      <button
-        type='submit'
-        disabled={nameValue.length < 3}
-        className={`px-6 py-2 text-white rounded-md focus:outline-none focus:ring focus:ring-white transition-colors duration-300 ${
-          nameValue.length < 8
-            ? 'bg-gray-600 cursor-not-allowed'
-            : 'bg-amber-600 hover:bg-amber-700 focus:ring-blue-300'
-        }`}
-      >
-        Search
-      </button>
+      <div className='relative'>
+        <input
+          type='text'
+          placeholder={artistName === '' ? 'Artist Name' : artistName}
+          value={nameValue}
+          required
+          onChange={(e) => setNameValue(e.target.value.toLowerCase())}
+          className='block w-full p-4 ps-10 text-sm text-gray-900 border border-gray-300 rounded-e-lg bg-gray-50 focus:ring-gray-500 focus:border-gray-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500'
+          // className='w-full px-4 py-2 rounded-sm focus:outline-none focus:ring focus:ring-gray-500  bg-gray-900 text-white'
+        />
+        <button
+          type='submit'
+          disabled={nameValue.length < 3}
+          className={`absolute end-2.5 bottom-2.5 focus:ring-4 focus:outline-none font-medium rounded-lg text-sm px-4 py-2 ${
+            nameValue.length < 8
+              ? 'bg-gray-600 cursor-not-allowed'
+              : 'bg-amber-600 hover:bg-amber-700 focus:ring-amber-300 text-white'
+          }`}
+          // className={`absolute end-2.5 bottom-2.5 px-6 py-2 text-white rounded-md focus:outline-none focus:ring focus:ring-white transition-colors duration-300 ${
+          //   nameValue.length < 8
+          //     ? 'bg-gray-600 cursor-not-allowed'
+          //     : 'bg-amber-600 hover:bg-amber-700 focus:ring-amber-300'
+          // }`}
+        >
+          Search
+        </button>
+      </div>
     </form>
   );
 };

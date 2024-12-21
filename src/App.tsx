@@ -90,16 +90,21 @@ function App() {
 
   return (
     <>
-      <div className='flex gap-4 p-4'>
-        <SearchBar
-          onSearch={handleSearch}
-          artistName={artistInformations?.title}
-        />
+      <div
+        className='max-w-lg mx-auto flex mt-4'
+        // className='flex gap-4 p-4'
+      >
         {albums && <OrderBy albums={albums} onSort={handleSort} />}
+        {artistInformations && (
+          <SearchBar
+            onSearch={handleSearch}
+            artistName={artistInformations?.title}
+          />
+        )}
       </div>
 
       <article>
-        <div className='mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8'>
+        <div className='mx-auto max-w-2xl px-4 py-16 sm:px-6 lg:max-w-7xl lg:px-8'>
           <div className='mt-6 grid grid-cols-1 gap-x-4 gap-y-3 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-4'>
             {albums?.map((release, index) => {
               const {
