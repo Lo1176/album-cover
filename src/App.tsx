@@ -20,7 +20,6 @@ import {
 Modal.setAppElement('#root'); // Important pour l'accessibilité
 
 function App() {
-  // const artistId: Artist['id'] = 422014;
   const [artistInformations, setArtistInformations] = useState<
     ArtistInformations | undefined
   >();
@@ -74,7 +73,7 @@ function App() {
   }, [albumData, resourceUrl, artistInformations]);
 
   if (isLoading)
-    return <Loading text='We are fetching albums please wait...' />;
+    return <Loading text='We are fetching albums, please wait...' />;
   if (error) return <div className='text-red-600'>Error: {error.message}</div>;
 
   const handleCloseModal = () => {

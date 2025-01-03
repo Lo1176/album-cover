@@ -7,8 +7,7 @@ import {
   ReleaseTypes,
 } from '../models/discogsTypes';
 
-const discogsToken = import.meta.env.VITE_DISCOGS_TOKEN;
-const token: string = discogsToken;
+const token: string = import.meta.env.VITE_DISCOGS_TOKEN;
 const baseUrl: string = 'https://api.discogs.com/database/search';
 
 type SearchType = 'release' | 'master' | 'artist' | 'label' | undefined;
@@ -68,7 +67,7 @@ export const useFetchReleaseQuery = (
     // dès que resourceUrl change ça refetch
     queryKey: ['release', resourceUrl],
     queryFn: async () => {
-      const result = await fetch(resourceUrl + `?token=${discogsToken}`);
+      const result = await fetch(resourceUrl + `?token=${token}`);
       if (!result.ok) {
         throw new Error(`Error fetching data: ${result.statusText}`);
       }
