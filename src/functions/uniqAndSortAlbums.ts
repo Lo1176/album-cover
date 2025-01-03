@@ -1,4 +1,5 @@
 import { ReleasesTypes } from '../models/discogsTypes';
+import OrderByKeyName from './orderByKeyName';
 
 const uniqAndSortAlbums = (albums: ReleasesTypes[]) => {
   const albumsWithReleasedYear = albums.filter(
@@ -17,25 +18,6 @@ const uniqAndSortAlbums = (albums: ReleasesTypes[]) => {
   const sortedResults = OrderByKeyName(uniqueResults, 'year', false);
 
   return sortedResults;
-};
-
-export const OrderByKeyName = (
-  albums: ReleasesTypes[],
-  keyName: 'year' | 'title',
-  isAscending: boolean
-): ReleasesTypes[] => {
-  console.log('🚀 ~  OrderByKeyName isAscending is not changing:', isAscending);
-  return albums.sort((a, b) => {
-    if (keyName === 'year') {
-      return isAscending ? a.year - b.year : b.year - a.year;
-    }
-    if (keyName === 'title') {
-      return isAscending
-        ? a.title.localeCompare(b.title)
-        : b.title.localeCompare(a.title);
-    }
-    return 0; // fallback in case of invalid or undefined keyName
-  });
 };
 
 export default uniqAndSortAlbums;
