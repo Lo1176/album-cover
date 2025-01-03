@@ -29,13 +29,13 @@ export const ModalCredits = ({
         ×
       </button>
 
-      <div className='flex flex-col items-center py-6 px-4 gap-6'>
+      <div className='flex flex-col items-center py-6 sm:py-12 px-4 gap-6 sm:gap-10'>
         <img
           src={albumDetails.images[0].resource_url}
           alt={albumDetails.title}
           className='w-3/4 lg:w-[500px] rounded-sm shadow-[8px_12px_20px_0px_rgba(0,0,0,0.5)] object-cover'
         />
-        <div className='flex flex-col justify-center gap-4 px-8'>
+        <div className='flex flex-col justify-center text-center gap-4 px-8'>
           <div>
             <h2 className='font-dreadnoughtus tracking-widest text-xl sm:text-3xl uppercase font-bold mb-1'>
               {albumDetails.title}
