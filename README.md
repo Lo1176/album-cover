@@ -27,3 +27,8 @@ Screenshot of the main screen
 Screenshot showing album details
 
 ![Screenshot showing album details](./src/assets/on-modal-opened.png)
+
+## Start in local
+
+run `pnpm run dev` in your terminal
+on visit your app on Local: http://localhost:5173/
