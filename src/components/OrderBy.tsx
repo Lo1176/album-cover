@@ -9,7 +9,7 @@ interface OrderByProps {
 }
 
 const OrderBy = ({ albums, onSort }: OrderByProps) => {
-  const [keyName, setKeyName] = useState<'year' | 'title'>('year');
+  const [keyName, setKeyName] = useState<'year' | 'artist'>('year');
   const [isAscending, setIsAscending] = useState(false);
 
   useEffect(() => {
@@ -29,10 +29,10 @@ const OrderBy = ({ albums, onSort }: OrderByProps) => {
     <div className='flex'>
       <select
         value={keyName}
-        onChange={(e) => setKeyName(e.target.value as 'year' | 'title')}
-        className='bg-gray-700 text-white text-sm rounded-s-lg focus:ring hover:bg-gray-600 focus:ring-gray-700 focus:border-gray-500 block p-4 focus-visible:outline-none border-s border-gray-600'
+        onChange={(e) => setKeyName(e.target.value as 'year' | 'artist')}
+        className='bg-gray-700 text-white text-sm rounded-s-lg hover:bg-gray-600 block p-4 focus-visible:outline-none border-s border-gray-600'
       >
-        {['year', 'title'].map((option) => (
+        {['year', 'artist'].map((option) => (
           <option key={option} value={option}>
             {option}
           </option>
