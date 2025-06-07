@@ -1,3 +1,5 @@
+import { Spinner } from './Spinner';
+
 interface LoadingProps {
   text: string;
 }
@@ -8,10 +10,7 @@ export const Loading = ({ text }: LoadingProps) => {
       <div className="absolute inset-0 bg-[url('/src/assets/images/main-page-presentation.webp')] bg-cover bg-center opacity-10"></div>
       <div className='relative z-10'>
         <div className='flex flex-col justify-center items-center h-screen  gap-4 text-gray-100'>
-          <div
-            className='inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]'
-            role='status'
-          ></div>
+          <Spinner />
           {text}
         </div>
       </div>
