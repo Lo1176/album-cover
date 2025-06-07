@@ -22,11 +22,11 @@ This is a fast-loading web application showcasing my work as an audio engineer. 
 
 Screenshot of the main screen
 
-![Screenshot of the main screen, representing cover albums](./src/assets/main-page-presentation.png)
+![Screenshot of the main screen, representing cover albums](./src/assets/images/main-page-presentation.webp)
 
 Screenshot showing album details
 
-![Screenshot showing album details](./src/assets/on-modal-opened.png)
+![Screenshot showing album details](./src/assets/images/on-modal-opened.webp)
 
 ## Start in local
 

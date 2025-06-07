@@ -73,6 +73,7 @@ function App() {
   }, [albumData, resourceUrl, artistInformations]);
 
   if (isLoading)
+    // TODO: Add a skeleton loader or an image at the background
     return <Loading text='We are fetching albums, please wait...' />;
   if (error) return <div className='text-red-600'>Error: {error.message}</div>;
 
