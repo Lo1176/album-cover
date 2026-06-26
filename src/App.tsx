@@ -2,8 +2,6 @@ import { useEffect, useState } from 'react';
 import Modal from 'react-modal';
 import { Loading } from './components/Loading';
 import { ModalCredits } from './components/ModalCredits';
-import OrderBy from './components/OrderBy';
-import { SearchBar } from './components/SearchBar';
 import { findRoleByArtistId } from './functions/findRoleByArtistId';
 import {
   useFetchAllAlbumsByArtistNameQuery,
@@ -41,11 +39,12 @@ function App() {
     setArtistInformations(artistInformationsFetched);
   }, [artistInformationsFetched]);
 
-  const handleSearch = (newArtistName: string) => {
-    setArtistName(newArtistName);
-    refetch();
-    artistInformationsRefetch();
-  };
+  // search bar and order by are commented out for now, but can be re-enabled if needed
+  // const handleSearch = (newArtistName: string) => {
+  //   setArtistName(newArtistName);
+  //   refetch();
+  //   artistInformationsRefetch();
+  // };
 
   const [selectedAlbumDetails, setSelectedAlbumDetails] = useState<
     ReleaseTypes | null | undefined
@@ -66,7 +65,7 @@ function App() {
       const roleByArtistId = findRoleByArtistId(
         extraartists,
         tracklist,
-        artistInformations?.id
+        artistInformations?.id,
       );
       setArtistRole(roleByArtistId);
     }
@@ -83,13 +82,15 @@ function App() {
 
   const isModalShowing = !!artistRole && !!selectedAlbumDetails;
 
-  const handleSort = (sortedAlbums: ReleasesTypes[]) => {
-    setAlbums(sortedAlbums);
-  };
+  // The following code for sorting albums is commented out, but can be re-enabled if needed
+  // const handleSort = (sortedAlbums: ReleasesTypes[]) => {
+  //   setAlbums(sortedAlbums);
+  // };
 
   return (
     <>
-      <div className='max-w-lg mx-4 sm:mx-auto flex mt-4'>
+      {/* // The following code for search bar and order by is commented out, but can be re-enabled if needed */}
+      {/* <div className='max-w-lg mx-4 sm:mx-auto flex mt-4'>
         {albums && <OrderBy albums={albums} onSort={handleSort} />}
         {artistInformations && (
           <SearchBar
@@ -97,7 +98,13 @@ function App() {
             artistName={artistInformations?.title}
           />
         )}
-      </div>
+      </div> */}
+
+      <header className='mt-10 text-center px-4 py-8 sm:mt-12 sm:px-8'>
+        <h1 className='font-dreadnoughtus text-3xl font-bold uppercase tracking-widest text-white sm:text-4xl '>
+          Laurent Binder
+        </h1>
+      </header>
 
       <article>
         <div className='mx-auto max-w-2xl px-4 py-16 sm:px-6 lg:max-w-7xl lg:px-8'>

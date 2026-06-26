@@ -18,7 +18,7 @@ export const useFetchAllAlbumsByArtistNameQuery = (
   artistName: string = '',
   type: SearchType = 'release',
   format?: SearchFormat,
-  perPage: string = '50'
+  perPage: string = '50',
 ): UseQueryResult<ReleasesTypes[]> => {
   return useQuery<ReleasesTypes[]>({
     queryKey: ['allAlbums', artistName, type, format],
@@ -61,7 +61,7 @@ export const useFetchAllAlbumsByArtistNameQuery = (
 
 // Fetch an album
 export const useFetchReleaseQuery = (
-  resourceUrl: string | undefined
+  resourceUrl: string | undefined,
 ): UseQueryResult<ReleaseTypes> => {
   return useQuery<ReleaseTypes>({
     // dès que resourceUrl change ça refetch
@@ -80,7 +80,7 @@ export const useFetchReleaseQuery = (
 
 // fetch artist informations
 export const useFetchArtistInformationsQuery = (
-  artistName: string
+  artistName: string,
 ): UseQueryResult<ArtistInformations> => {
   return useQuery({
     queryKey: ['artistInformations', artistName],
@@ -88,7 +88,7 @@ export const useFetchArtistInformationsQuery = (
       const response = await fetch(
         `${baseUrl}?q=${
           artistName === '' ? 'laurent_binder' : artistName
-        }&token=${token}`
+        }&token=${token}`,
       );
       if (!response.ok) {
         throw new Error(`Error fetching data: ${response.statusText}`);
@@ -97,7 +97,7 @@ export const useFetchArtistInformationsQuery = (
       const data: DiscogsReleasesResponse = await response.json();
       localStorage.setItem(
         'artist_informations',
-        JSON.stringify(data.results[0])
+        JSON.stringify(data.results[0]),
       );
       return data.results[0];
     },
