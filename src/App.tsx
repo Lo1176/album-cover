@@ -21,16 +21,14 @@ function App() {
   const [artistInformations, setArtistInformations] = useState<
     ArtistInformations | undefined
   >();
-  const [artistName, setArtistName] = useState<string>('');
+  const artistName: string = 'Laurent Binder';
   const [albums, setAlbums] = useState<ReleasesTypes[] | undefined>();
 
-  const { data, isLoading, error, refetch } =
+  const { data, isLoading, error } =
     useFetchAllAlbumsByArtistNameQuery(artistName);
 
-  const {
-    data: artistInformationsFetched,
-    refetch: artistInformationsRefetch,
-  } = useFetchArtistInformationsQuery(artistName);
+  const { data: artistInformationsFetched } =
+    useFetchArtistInformationsQuery(artistName);
 
   useEffect(() => {
     setAlbums(data);
@@ -38,13 +36,6 @@ function App() {
   useEffect(() => {
     setArtistInformations(artistInformationsFetched);
   }, [artistInformationsFetched]);
-
-  // search bar and order by are commented out for now, but can be re-enabled if needed
-  // const handleSearch = (newArtistName: string) => {
-  //   setArtistName(newArtistName);
-  //   refetch();
-  //   artistInformationsRefetch();
-  // };
 
   const [selectedAlbumDetails, setSelectedAlbumDetails] = useState<
     ReleaseTypes | null | undefined
@@ -82,24 +73,8 @@ function App() {
 
   const isModalShowing = !!artistRole && !!selectedAlbumDetails;
 
-  // The following code for sorting albums is commented out, but can be re-enabled if needed
-  // const handleSort = (sortedAlbums: ReleasesTypes[]) => {
-  //   setAlbums(sortedAlbums);
-  // };
-
   return (
     <>
-      {/* // The following code for search bar and order by is commented out, but can be re-enabled if needed */}
-      {/* <div className='max-w-lg mx-4 sm:mx-auto flex mt-4'>
-        {albums && <OrderBy albums={albums} onSort={handleSort} />}
-        {artistInformations && (
-          <SearchBar
-            onSearch={handleSearch}
-            artistName={artistInformations?.title}
-          />
-        )}
-      </div> */}
-
       <header className='mt-10 text-center px-4 py-8 sm:mt-12 sm:px-8'>
         <h1 className='font-dreadnoughtus text-3xl font-bold uppercase tracking-widest text-white sm:text-4xl '>
           Laurent Binder
